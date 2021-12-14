@@ -20,7 +20,10 @@ jobs:
         run: |
           npm install
           npm install -g gulp-cli
-          .github/scripts/check.sh
+          if grep --color=always -rE '(Symbiflow|simbi[fF]low)' source/; then
+            echo "Found incorrect casing of SymbiFlow"
+            exit 1
+          fi
           gulp build
       - uses: actions/upload-artifact@v2
         with:
