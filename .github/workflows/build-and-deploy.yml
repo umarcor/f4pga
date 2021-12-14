@@ -46,18 +46,4 @@ jobs:
           fetch-depth: 0
       - name: Deploy website
         if: github.event_name == 'push'
-        run: |
-          git config --global user.name SymbiFlow
-          git config --global user.mail robot@mith.ro
-          git config --global push.default simple
-
-          GITHUB_USER=$(echo $GITHUB_REPOSITORY | sed -e's-/.*--')
-          if [ "$GITHUB_USER" == "SymbiFlow" ]; then
-            git clone https://${GH_TOKEN}@github.com/SymbiFlow/symbiflow.github.io --branch master build
-          else
-            git clone https://${GH_TOKEN}@github.com/$GITHUB_REPOSITORY --branch gh-pages build
-          fi
-          git status
-
-          cp -a /tmp/website-build/* build
-          ./.github/scripts/deploy-push.sh
+        run: ./.github/deploy.sh
