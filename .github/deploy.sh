@@ -7,7 +7,7 @@ git config --global user.mail robot@mith.ro
 git config --global push.default simple
 
 GITHUB_USER=$(echo $GITHUB_REPOSITORY | sed -e's-/.*--')
-if [ "$GITHUB_USER" == "SymbiFlow" ]; then
+if [ "x$GITHUB_USER" == "xSymbiFlow" ]; then
   git clone https://${GH_TOKEN}@github.com/SymbiFlow/symbiflow.github.io --branch master build
 else
   git clone https://${GH_TOKEN}@github.com/$GITHUB_REPOSITORY --branch gh-pages build
@@ -31,11 +31,22 @@ Built from [$GITHUB_REPOSITORY $GIT_DESCRIBE](https://github.com/$GITHUB_REPOSIT
 $COMMIT_MESSAGE
 EOF
 
+echo '> Add'
 git add --all .
+
+echo '> Status'
 git status
+
+echo '> Prepare commit message'
 echo "Updating to $GIT_DESCRIBE." > /tmp/git_commit
 echo >> /tmp/git_commit
 echo "$COMMIT_MESSAGE" >> /tmp/git_commit
+
+echo '> Commit'
 git commit -F /tmp/git_commit
+
+echo '> Log'
 git log
+
+echo '> Push'
 git push origin
