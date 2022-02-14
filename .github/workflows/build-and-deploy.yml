@@ -17,6 +17,7 @@ jobs:
           node-version: '10'
       - name: Clone and Build
         run: |
+          cd site
           npm install
           npm install -g gulp-cli
           if grep --color=always -rE '(Symbiflow|simbi[fF]low)' source/; then
@@ -27,7 +28,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: website-build
-          path: build
+          path: site/build
 
   deploy:
     if: github.event_name == 'push'
