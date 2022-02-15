@@ -9,7 +9,39 @@ on:
 
 jobs:
 
-  Docs:
+
+  Landing:
+    runs-on: ubuntu-latest
+    name: '🗺️ Landing'
+    steps:
+
+      - name: '🧰 Checkout'
+        uses: actions/checkout@v2
+
+      - name: '🛠️ Setup NodeJS'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '10'
+
+      - name: Clone and Build
+        run: |
+          cd site
+          npm install
+          npm install -g gulp-cli
+          if grep --color=always -rE '(Symbiflow|simbi[fF]low)' source/; then
+            echo "Found incorrect casing of SymbiFlow"
+            exit 1
+          fi
+          gulp build
+
+      - name: '📤 Upload artifact: Landing HTML'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Landing-HTML
+          path: site/build
+
+
+  Sphinx:
     runs-on: ubuntu-latest
     name: '📓 Docs'
     steps:
@@ -36,15 +68,50 @@ jobs:
           name: Documentation-HTML
           path: _build/html
 
+
+  Deploy:
+    if: github.event_name == 'push'
+    name: '🚀 Deploy to GitHub Pages'
+    needs:
+      - Sphinx
+      - Landing
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: '🧰 Checkout'
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: '📥 Download Artifact: Landing HTML'
+        uses: actions/download-artifact@v2
+        with:
+          name: Landing-HTML
+          path: Site-HTML
+
+      - name: '📥 Download Artifact: Documentation HTML'
+        uses: actions/download-artifact@v2
+        with:
+          name: Documentation-HTML
+          path: Site-HTML/docs
+
+      #- name: Deploy website
+      #  env:
+      #    GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+      #    COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      #  run: ./.github/deploy.sh
+
       - name: 🚀 Publish site to GitHub Pages
         if: github.event_name != 'pull_request'
         run: |
-          cd _build/html
+          cd Site-HTML
           touch .nojekyll
           git init
-          cp ../../.git/config ./.git/config
+          cp ../.git/config ./.git/config
           git add .
           git config --local user.email "BuildTheDocs@GitHubActions"
           git config --local user.name "GitHub Actions"
           git commit -a -m "update ${{ github.sha }}"
           git push -u origin +HEAD:gh-pages
+          cd ..
+          rm -rf Site-HTML
