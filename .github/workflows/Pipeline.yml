@@ -152,17 +152,17 @@ jobs:
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
 
-      - name: Check licenses
-        run: source .github/scripts/check_license.sh
-
-      - name: Check Python scripts
-        run: source .github/scripts/check_python_script.sh
+#      - name: Check licenses
+#        run: source .github/scripts/check_license.sh
+#
+#      - name: Check Python scripts
+#        run: source .github/scripts/check_python_script.sh
 
       - name: Install Python requirements
         run: pip install black tox
 
-      - name: Check Python formatting
-        run: black --check .
+#      - name: Check Python formatting
+#        run: black --check .
 
       - name: Build package and run tests with Tox
         run: tox -e py
