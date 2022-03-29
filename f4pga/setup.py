@@ -19,6 +19,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from pathlib import Path
+from typing import List
 
 from setuptools import setup as setuptools_setup
 
@@ -27,6 +28,28 @@ F4PGA_FAM = environ.get('F4PGA_FAM', 'xc7')
 
 
 packagePath = Path(__file__).resolve().parent
+requirementsFile = packagePath / "requirements.txt"
+
+
+# Read requirements file and add them to package dependency list
+def get_requirements(file: Path) -> List[str]:
+    requirements = []
+    with file.open("r") as fh:
+        for line in fh.read().splitlines():
+            if line.startswith("#") or line == "":
+                continue
+            elif line.startswith("-r"):
+                # Remove the first word/argument (-r)
+                filename = " ".join(line.split(" ")[1:])
+                requirements += get_requirements(file.parent / filename)
+            elif line.startswith("https"):
+                # Convert 'URL#NAME' to 'NAME @ URL'
+                splitItems = line.split("#")
+                requirements.append("{} @ {}".format(splitItems[1], splitItems[0]))
+            else:
+                requirements.append(line)
+    return requirements
+
 
 sf = "symbiflow"
 shwrappers = "f4pga.wrappers.sh.__init__"
@@ -51,9 +74,11 @@ setuptools_setup(
     version="0.0.0",
     license="Apache-2.0",
     author="F4PGA Authors",
+    author_email="f4pga-wg@lists.chipsalliance.org",
     description="F4PGA.",
     url="https://github.com/chipsalliance/f4pga",
     packages=[
+        "f4pga",
         "f4pga.wrappers.sh",
     ],
     package_dir={"f4pga": "."},
@@ -63,6 +88,7 @@ setuptools_setup(
     classifiers=[],
     python_requires='>=3.6',
     entry_points={
-        "console_scripts": ["symbiflow_get_latest_artifact_url=stdm.__init__:main"] + wrapper_entrypoints
+        "console_scripts": ["symbiflow_get_latest_artifact_url=tdm:main"] + wrapper_entrypoints
     },
+    install_requires=list(set(get_requirements(requirementsFile))),
 )
