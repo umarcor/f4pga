@@ -17,16 +17,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
-import argparse
-
-parser = argparse.ArgumentParser(
-    description="Retrieves the latest artifacts of SymbiFlow-related CIs."
-)
-
-
 def test_get_symbiflow_arch_defs_tarball():
-    from stdm import get_latest_artifact_url
+    from f4pga.tdm import get_latest_artifact_url
     import requests
     import filetype
 

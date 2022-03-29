@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -39,35 +39,3 @@ if [ ! -z "$ERROR_FILES" ]; then
     done
     return 1
 fi
-
-#echo
-#echo "==========================="
-#echo "Check third party LICENSE"
-#echo "==========================="
-#echo
-#
-#function check_if_submodule {
-#    for submodule in `git submodule --quiet foreach 'echo $sm_path'`; do
-#        if [ "$1" == "$submodule" ]; then
-#            return 1
-#        fi
-#    done
-#}
-#
-#THIRD_PARTY_DIRS=`ls -d third_party/*`
-#ERROR_NO_LICENSE=""
-#
-#for dir in $THIRD_PARTY_DIRS; do
-#    # Checks if we are not in a submodule
-#    if check_if_submodule $dir; then
-#        echo "Checking $dir"
-#        [ -f $dir/LICENSE ] || ERROR_NO_LICENSE="$ERROR_NO_LICENSE $dir"
-#    fi
-#done
-#
-#if [ ! -z "$ERROR_NO_LICENSE" ]; then
-#    for dir in $ERROR_NO_LICENSE; do
-#        echo "ERROR: $dir does not have the LICENSE file."
-#    done
-#    return 1
-#fi
