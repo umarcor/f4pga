@@ -120,6 +120,7 @@ html_theme_options = {
     'globaltoc_collapse': True,
     'color_primary': 'indigo',
     'color_accent': 'blue',
+    'hide_symbiflow_links': True
 }
 
 html_static_path = ['_static']
