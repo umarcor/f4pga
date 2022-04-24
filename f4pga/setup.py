@@ -63,6 +63,6 @@ setuptools_setup(
     classifiers=[],
     python_requires='>=3.6',
     entry_points={
-        "console_scripts": wrapper_entrypoints
+        "console_scripts": ["symbiflow_get_latest_artifact_url=stdm.__init__:main"] + wrapper_entrypoints
     },
 )
